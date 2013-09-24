@@ -1,0 +1,109 @@
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+	font-size: 16px;
+	background-color: #eeeeee;
+}
+.sidebar-nav {
+	padding: 9px 0;
+}
+
+#rating_value {
+  font-size: 18em;
+  font-family: "Arial Black";
+  font-weight: bold;
+  height:50px;
+  border:0;
+  background-color: #efefef;
+  float: right;
+}
+
+.rating {
+  font-size: 2.4em;
+  font-family: "Arial Black";
+  font-weight: bold;
+  height:50px;
+  border:0;
+  clear:both;
+  width: 100%;
+}
+
+#slider { width:60%;}
+
+#container1, #container2, #container3, #container4, #container5, #container6 {
+	width : 320px;
+	height: 284px;
+}
+
+div.rateCategory { float: left; clear:both; width: 60%; }
+div.rateCategory a.dropdown-toggle, div.rateCategory ul.dropdown-menu { float:right; }
+
+ul.ratingsListing {
+  margin-bottom: 18px;
+  margin-left: 4;
+  list-style: none;
+}
+ul.ratingsListing li { margin-bottom: 10px; width: 100%; line-height: 44px; }
+ul.ratingsListing li.nav-header { margin-bottom: 20px;}
+div.nav-header.ratingsListingHeader { 
+	margin-bottom: 0;
+	font-size: 60px;
+	line-height: 1;
+	letter-spacing: -1px;
+	color: inherit;
+	font-size: 18px; 
+	font-weight: 700; 
+	clear:both; 
+	padding: 10px;
+	text-transform: uppercase;
+}
+ 
+ .badge {
+ 	border: 1px solid #696969;
+	width: 50px;
+	margin: 0 5px 8px 0;
+ }   
+
+.badge-title {
+	font-size:24px; 
+	padding-left: 5px
+}
+.badge.info {
+	background-color: #0bb793;
+}
+.badge.rating.warning {
+	background-color: #f1320f;
+}
+.badge.rating.important {
+	background-color: #f17a0f;
+}
+.badge.rating.success {
+	background-color: #0bb043;
+}
+.notes-overlay {
+	display: none;
+	z-index: 9999;
+	padding: 30px 12px 10px 17px;
+	border-radius: 4px;
+	width: 300px;
+	background-color: #181414;
+	border: 2px solid #696969;
+	color: #cccccc;
+	opacity: 0.5;
+	position: relative;
+	top: -30px;
+	left: 27px;
+	opacity: 0.85;
+}
+
+
+div#about, div#contact {
+	float:right;
+	width: 74%;
+	padding: 10px;
+	background-color: #efefef;
+	border: #000000 1 px solid;
+	margin: 20px 0px;
+}
+
+.form-horizontal .control-label { width: 20px; text-align: left;  }
