@@ -11,8 +11,7 @@ $(function(){
 
 		badgeType: function(rating) {
 			badge = 'default';
-	   		switch(true)
-			{
+   		switch(true) {
 				case ( rating < 3 ):
 				  badge = 'important';
 				  break;
@@ -34,7 +33,7 @@ $(function(){
 		},
 		
 		initialize: function(options) {
-			this.set({ badge: this.badgeType(rateVal) });
+			this.set({ badge: this.badgeType(this.rating) });
 		}
 		
 	});
@@ -72,12 +71,18 @@ $(function(){
 	  	app.ratingsList = new app.RatingsList({ model: app.Rating });
 			app.ratingsView = new app.RatingsListView({ collection: app.ratingsList });
     	app.ratingsList.fetch({ 
-				success: function(){
-					$.each(app.ratingsList.models, function(key, item) {
-						item.set('y', item.get('rating'));
-						item.set('x', item.get('created') || moment());
-						item.save();
-					});
+				success: function (collection, response, options) {
+					console.log('SUCCESS FETCHING DATA FROM SERVER');
+					// update each model with x/y values
+					// $.each(collection.models, function(key, item) {
+					// 	try {
+					// 		item.set('y', item.get('rating'));
+					// 		item.set('x', item.get('created') || moment().format('MMMM Do YYYY, h:mm:ss a'));							
+					// 		item.save();
+					// 	} catch (error) {
+					// 		console.log('Error saving. ' + error);
+					// 	}
+					// });
 					app.ratingsView.work = app.ratingsList.where({ category: 'Work'});
 					app.ratingsView.general = app.ratingsList.where({ category: 'General'});
 					app.ratingsView.love = app.ratingsList.where({ category: 'Love'});
@@ -86,7 +91,10 @@ $(function(){
 					
 					app.ratingsChart = new app.Chart({ category: 'work' });
 					app.ratingsChart.render();
-				} 
+				},
+				error: function (collection, response, options) {
+					console.log('ERROR FETCHING DATA FROM SERVER');
+				}
 			});
 			
     	app.ratingsList.bind('reset', function () { app.ratingsView.render(); });
@@ -97,10 +105,6 @@ $(function(){
 			
 		}
 
-    // urlFilter: function (type) {
-    //     Ratings.filterType = type;
-    //     Ratings.trigger("change:filterType");
-    // }
 	});
 
 	var templatesList = ['overlay', 'ratings-list-item', 'hero'];

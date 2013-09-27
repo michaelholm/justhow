@@ -1,4 +1,6 @@
 var mongo = require('mongodb');
+var _ = require('underscore');
+var moment = require('moment');
 
 var Server = mongo.Server,
     Db = mongo.Db,
@@ -17,12 +19,13 @@ db.open(function(err, db) {
 exports.addRating = function(req, res) {
   db.collection('justhowhappy', function(err, collection) {
 		var obj = {};
-		obj.created = Date();
-		obj.rating = req.body.rating || null;
-		obj.category = req.body.category || null;
-		obj.notes = req.body.notes || null;
-	  collection.insert(obj);
-	 	res.send('added a ' + obj.rating + ' rating for ' + obj.category + ' category');
+		obj.created = moment().format('MMMM Do YYYY, h:mm:ss a');
+        obj.x = req.body.rating;
+        obj.y = obj.created;
+		var newObj = _.extend(obj, req.body);
+
+	  collection.insert(newObj);
+	 	res.send('added a ' + obj.rating + ' rating for ' + obj.category + ' category\n\n');
 		
 	});
 }
@@ -54,5 +57,6 @@ exports.findAll = function(req, res) {
 
 curl -i -X POST -H 'Content-Type: application/json' -d '{"rating": 6, "category": "Stress", "badge": "warning" }' http://localhost:3000/ratings
 
+curl -i -X POST -H 'Content-Type: application/json' -d '{"rating": 8, "category": "Work", "badge": "success", "x": "September 26th 2013, 6:44:43 pm", "y": 8 }' http://localhost:3000/ratings
 
 */

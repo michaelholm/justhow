@@ -9,22 +9,22 @@ $(function(){
 		className: "ratingsListing",
 				
 		initialize: function (models, options) {
-			_.bindAll(this, 'render');
+			var self = this;
 			var options = options || {}
 			
-	    this.collection.on("change", this.render);
+			_.bindAll(this, 'render');
+	    self.collection.on("change", self.render);
 			
-			//this.template = _.template(tpl.get('rating-list-item'));
-			var self = this;
+
 			
-			this.collection = app.ratingsList;
-			this._super("initialize");
+			self.collection = app.ratingsList;
+			self._super("initialize");
 			
 			rateTitle = $('ul.ratingsListing li.nav-header');
 			$('ul.ratingsListing').empty();
 	    $('ul.ratingsListing').append(rateTitle);
 		
-			this.render();
+			self.render();
 
 		},
 
@@ -38,8 +38,6 @@ $(function(){
 			_.each(
 					self.collection.models, 
 					function (item) {
-							//item.set('y', item.get('rating'));
-							//item.set('x', item.get('created') || moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
 	    				//self.renderItem(item);
 		   		}, 
 		   		this
@@ -183,13 +181,24 @@ $(function(){
 	});
 	
 	app.Chart = Backbone.View.extend({
-		
+		el: '#chart-container',
 		initialize: function(options) {
-			
+			console.log('initializing chart');
 		},
 		events: {},
+
 		render: function() {
-			$('#container').highcharts({
+			var self = this;
+			console.log('rendering chart');
+
+			var work = JSON.stringify(app.ratingsView.work);
+			var health = JSON.stringify(app.ratingsView.health);
+			var love = JSON.stringify(app.ratingsView.love)
+			var social = JSON.stringify(app.ratingsView.social)
+			var general = JSON.stringify(app.ratingsView.general);
+
+
+			$('#chart-container').highcharts({
 		  	chart: { type: 'line' },
 			  title: { text: 'August 2013' },
 				followPointer: false,
@@ -225,21 +234,25 @@ $(function(){
 		  },
 		   series: [{
 		   	name: 'Work',
-	     	data: JSON.stringify(app.ratingsView.work)
-		  }, 
-			{
-		  	name: 'Health',
-	     	data: JSON.stringify(app.ratingsView.health)
-		 	}, {
-       	name: 'Love',
-     		data: JSON.stringify(app.ratingsView.love)
-		 	}, {
-	   		name: 'Social',
-	  		data: JSON.stringify(app.ratingsView.social)
-			}, {
-		  	name: 'General',
-	   		data: JSON.stringify(app.ratingsView.general)
-		 	}]
+	     	data: work
+		  }
+		 //  , 
+			// {
+		 //  	name: 'Health',
+	  //    	data: health
+		 // 	}, 
+		 // 	{
+   //     	name: 'Love',
+   //   		data: love
+		 // 	}, {
+	  //  		name: 'Social',
+	  // 		data: social
+			// }, 
+			// {
+		 //  	name: 'General',
+	  //  		data: general
+		 // 	}
+		 	]
 		 });
 		}
 	});
