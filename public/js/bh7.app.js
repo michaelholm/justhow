@@ -52,6 +52,16 @@ $(function(){
 			//this.fetch();			
 		},
 
+		comparator: function(rating) {
+			return rating.get("x");
+		},
+
+		iwhere : function( key, val ){
+        return this.filter( function( item ){
+            return item.get( key ).toLowerCase() === val.toLowerCase();
+        });
+     }
+
 			
 	});
 	
@@ -65,7 +75,7 @@ $(function(){
 		},
 
     initialize: function () {
-
+    	var self = this;
 			app.rater = new app.Rater();
 			app.rater.render();
 	  	app.ratingsList = new app.RatingsList({ model: app.Rating });
@@ -73,33 +83,85 @@ $(function(){
     	app.ratingsList.fetch({ 
 				success: function (collection, response, options) {
 					console.log('SUCCESS FETCHING DATA FROM SERVER');
-					// update each model with x/y values
-					// $.each(collection.models, function(key, item) {
-					// 	try {
-					// 		item.set('y', item.get('rating'));
-					// 		item.set('x', item.get('created') || moment().format('MMMM Do YYYY, h:mm:ss a'));							
-					// 		item.save();
-					// 	} catch (error) {
-					// 		console.log('Error saving. ' + error);
-					// 	}
-					// });
+
 					app.ratingsView.work = app.ratingsList.where({ category: 'Work'});
 					app.ratingsView.general = app.ratingsList.where({ category: 'General'});
-					app.ratingsView.love = app.ratingsList.where({ category: 'Love'});
+					app.ratingsView.love = app.ratingsList.iwhere( 'category', 'Love' );
 					app.ratingsView.social = app.ratingsList.where({ category: 'Social'});
-					app.ratingsView.health = app.ratingsList.where({ category: 'Health'});
-					
-					app.ratingsChart = new app.Chart({ category: 'work' });
+					app.ratingsView.health = app.ratingsList.iwhere( 'category', 'Health' );
+					//_.sortBy(app.ratingsView.work, function(item) { return item.get('x'); }, this);
+
+					var mappedWork = _.map(app.ratingsView.work, function(item) { 
+								var passItem = {};
+								passItem.x = parseInt(item.get('x'), 10);
+								passItem.y = parseInt(item.get('y'), 10);
+								passItem.category = item.get('category');
+
+								return passItem; 
+							});
+					var workRatings = _.sortBy(mappedWork, function(item) { return item.x; }, this);
+
+					var mappedGeneral = _.map(app.ratingsView.general, function(item) { 
+							var passItem = {};
+							passItem.x = parseInt(item.get('x'), 10);
+							passItem.y = parseInt(item.get('y'), 10);
+							passItem.category = item.get('category');
+
+							return passItem; 
+						});
+					var generalRatings = _.sortBy(mappedGeneral, function(item) { return item.x; }, this);
+
+					var mappedHealth = _.map(app.ratingsView.health, function(item) { 
+								var passItem = {};
+								passItem.x = parseInt(item.get('x'), 10);
+								passItem.y = parseInt(item.get('y'), 10);
+								var cat = item.get('category');
+								passItem.category = cat.toLowerCase();
+
+								return passItem; 
+						});
+					var healthRatings = _.sortBy(mappedHealth, function(item) { return item.x; }, this);
+					//var loveRatings = 
+
+					//var loveRatings = self.doMapping(app.ratingsView.love);
+					// var socialRatings = self.doMapping(app.ratingsView.social);
+					//var healthRatings = self.doMapping(app.ratingsView.health);
+
+					//console.log(JSON.stringify(healthRatings));
+					//console.log(JSON.stringify(loveRatings));
+
+					app.ratingsChart = new app.Chart({ work: workRatings, general: generalRatings, health: healthRatings });
 					app.ratingsChart.render();
 				},
+
 				error: function (collection, response, options) {
 					console.log('ERROR FETCHING DATA FROM SERVER');
-				}
+				},
+
+
 			});
 			
     	app.ratingsList.bind('reset', function () { app.ratingsView.render(); });
 			
     },
+
+		doMapping: function(col) {
+			var tmp = _.map(col, function(item) { 
+										var passItem = {};
+										passItem.x = parseInt(item.get('x'), 10);
+										passItem.y = parseInt(item.get('y'), 10);
+										var cat = item.get('category');
+										passItem.category = cat.toLowerCase();
+
+										return passItem; 
+								});
+			console.log(col);
+			var sortedTmp = _.sortBy(tmp, function(item) { 
+				return item.x; 
+			}, this);
+			console.log(col);
+			return tmp;
+		},
 		
 		home: function () {
 			

@@ -184,6 +184,11 @@ $(function(){
 		el: '#chart-container',
 		initialize: function(options) {
 			console.log('initializing chart');
+			this.chartWork = options.work;
+			this.chartGeneral = options.general;
+			this.chartLove = options.love;
+			// this.chartSocial = options.social;
+			this.chartHealth = options.health;
 		},
 		events: {},
 
@@ -191,12 +196,13 @@ $(function(){
 			var self = this;
 			console.log('rendering chart');
 
-			var work = JSON.stringify(app.ratingsView.work);
-			var health = JSON.stringify(app.ratingsView.health);
-			var love = JSON.stringify(app.ratingsView.love)
-			var social = JSON.stringify(app.ratingsView.social)
-			var general = JSON.stringify(app.ratingsView.general);
+			// var work = JSON.stringify(app.ratingsView.work);
+			// var health = JSON.stringify(app.ratingsView.health);
+			// var love = JSON.stringify(app.ratingsView.love)
+			// var social = JSON.stringify(app.ratingsView.social)
+			// var general = JSON.stringify(app.ratingsView.general);
 
+			//console.log(work);
 
 			$('#chart-container').highcharts({
 		  	chart: { type: 'line' },
@@ -205,17 +211,17 @@ $(function(){
 				turboThreshold: 0,
 				xAxis: {
 					categories: ["01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"],
-					tickmarkPlacement: 'on',
-					title: { enabled: false }
+					//tickmarkPlacement: 'on',
+					title: { text: 'Days of the Month' },
 				},
 		    yAxis: {
 		    	title: { text: 'Scale 1 - 10' },
-					categories: ["1","2","3","4","5","6","7","8","9","10"],
-		      labels: {
-		      	formatter: function() {
-		        	return this.value;
-		        }
-		      }
+					//categories: ["1","2","3","4","5","6","7","8","9","10"],
+		      // labels: {
+		      // 	formatter: function() {
+		      //   	return this.value;
+		      //   }
+		      // }
 		   },
 		   tooltip: {
 	     	shared: true,
@@ -234,24 +240,25 @@ $(function(){
 		  },
 		   series: [{
 		   	name: 'Work',
-	     	data: work
-		  }
-		 //  , 
-			// {
-		 //  	name: 'Health',
-	  //    	data: health
-		 // 	}, 
-		 // 	{
-   //     	name: 'Love',
-   //   		data: love
-		 // 	}, {
+	     	data: self.chartWork
+		  },
+			{
+		  	name: 'General',
+	   		data: self.chartGeneral
+		 	},
+			{
+		  	name: 'Health',
+	     	data: self.chartHealth
+		 	}
+		 	// , 
+		 	// {
+    //    	name: 'Love',
+    //  		data: self.chartLove
+		 	// } 
+		 //{
 	  //  		name: 'Social',
-	  // 		data: social
+	  // 		data: self.chartSocial
 			// }, 
-			// {
-		 //  	name: 'General',
-	  //  		data: general
-		 // 	}
 		 	]
 		 });
 		}

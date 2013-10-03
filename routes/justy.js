@@ -20,8 +20,8 @@ exports.addRating = function(req, res) {
   db.collection('justhowhappy', function(err, collection) {
 		var obj = {};
 		obj.created = moment().format('MMMM Do YYYY, h:mm:ss a');
-        obj.x = req.body.rating;
-        obj.y = obj.created;
+        obj.x = req.body.x || moment().format('D');
+        obj.y = req.body.rating;
 		var newObj = _.extend(obj, req.body);
 
 	  collection.insert(newObj);
