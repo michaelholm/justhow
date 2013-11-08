@@ -1,67 +1,55 @@
-window.RatingsListView = Backbone.View.extend({
+var app = app || {};
 
+// list of ratings
+app.RatingsListView = Backbone.View.extend({
+	// el: "ul.ratingsListing",
 	tagName: "ul",
+	className: "ratingsListing",
 			
-	initialize: function (models,options) {
-		//this.template = _.template(tpl.get('rating-list-item'));
-		
-		this.model.bind("reset", this.render, this);
+	initialize: function (models, options) {
 		var self = this;
+		options = options || {};
 		
-		this.collection = window.RatingsList;
-		this._super("initialize");
+		_.bindAll(this, 'render');
+		self.collection.on("change", self.render);
+		
+
+		self.collection = app.ratingsList;
 		
 		rateTitle = $('ul.ratingsListing li.nav-header');
 		$('ul.ratingsListing').empty();
-    	$('ul.ratingsListing').append(rateTitle);
+		$('ul.ratingsListing').append(rateTitle);
 	
-		this.render();
+		self.render();
 
 	},
-	
-	render: function(eventName){ 
-		_.each(this.collection.models, function (item) {
-            //this.renderItem(item);
-			$(this.el).append(new RatingsListItemView({model:rating}).render().el);
-        }, this);
 
+	events: {
+		//"click li" : "hoverBadge"
+	},
+
+	render: function(){
+		var self = this;
+		
+		_.each(
+			self.collection.models,
+				function (item) {
+					//self.renderItem(item);
+				},
+			this);
 	},
 	
-	renderItem: function (rating) {
-		var item = new RatingListItemView(rating);
-		//render item, grab html, and append to this view's html
+	renderItem:function (rating) {
+		var item = new app.RatingListItem(rating.toJSON());
 		item.render().$el.prependTo(this.$el);
+		return item;
 	},
-	
-});
 
-window.RatingListItemView = Backbone.View.extend({
-
-    tagName: "li",
-
-    className: "rating",
-    model: rating,
-		
-    initialize: function (options) {
-		this.template = _.template(tpl.get('ratings-list-item'));
-		
-		this.model.rating = this.options.rating;
-		this.model.category = this.options.category;
-		
-		this.badgeType = 'important'; //badgeType(this.rating);
-		
-		
-	    logLabel = "viewListItem";
-		isLogEnabled = false;
-		this._super( "initialize" );
-		appLog.info( "added" );			
+	hoverBadge: function(event) {
+		console.log('hovering');
+		var target = $(event.currentTarget);
+		var notes = target.$el.find('.notes-overlay');
+		notes.$el.fadeToggle('slow');
+	}
 	
-	},
-	
-    render: function () {
-	    with( this ) {
-			$(this.el).html(this.template(JSON.parse(this.attributes)));
-	        return this;
-		}
-	},
 });

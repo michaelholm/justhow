@@ -1,39 +1,46 @@
-window.RatingsChart = Backbone.View.extend({
+var app = app || {};
 
-	tagName: "div",
-			//<div id="container1"></div>
-	initialize: function (models,options) {
-		
-		this.template = _.template(tpl.get('ratings-list-item'), {});
-		this.model.bind("reset", this.render, this);
+app.Chart = Backbone.View.extend({
+	el: '#chart-container',
+	initialize: function(options) {
 		var self = this;
-		
-		// this.collection = RatingsList;
-		// this._super("initialize");
-		// 
-		// rateTitle = $('ul.ratingsListing li.nav-header');
-		// $('ul.ratingsListing').empty();
-		//     	$('ul.ratingsListing').append(rateTitle);
-	
-		this.render();
-
+		//self.data = options.ratings;
+		console.log('initializing chart');
 	},
-	
-	render: function(){ 
-		_.each(this.collection.models, function (item) {
-            //this.renderItem(item);
-			$(this.el).append(new RatingsChart({model:rating}).render().el);
-        }, this);
 
+	events: {},
+
+	render: function() {
+		var self = this;
+    console.log('rendering chart');
+
+    var workdata = app.ratingsRouter.ratings['work'];
+
+    var dt = new google.visualization.DataTable(
+     {
+       cols: [
+          {id: 'name', label: 'Rating', type: 'string'},
+          {id: 'x', label: 'Day', type: 'number'},
+          {id: 'y', label: 'Rating', type: 'number'}
+        ],
+       rows: workdata
+     },
+      0.6);
+
+    console.log('CHART DATA ', dt);
+    // Create and draw the visualization.
+    new google.visualization.LineChart(document.getElementById('chart-container')).draw( dt, {
+        curveType: "function",
+        width: 900,
+        height: 400,
+        vAxis: {
+          maxValue: 10,
+          gridlines: {
+            color: '#333',
+            count: 4
+          }
+        }
+      }
+    );
 	}
-	
 });
-
-/*
-
-basic_bars
-basic_bubble
-bars_stacked
-basic
-
-*/

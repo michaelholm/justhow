@@ -26,7 +26,7 @@ exports.addRating = function(req, res) {
 
 	  collection.insert(newObj);
 	 	res.send('added a ' + obj.rating + ' rating for ' + obj.category + ' category\n\n');
-		
+
 	});
 }
 
@@ -37,7 +37,12 @@ exports.findByRatingCategory = function(req, res) {
             if (err) {
                 res.send({'error':'Oops! An error has occurred'});
             } else {
-                res.send(items);
+                var retItems = [];
+                _.each(items, function(element, index, list) {
+                    retItems.push()
+                });
+
+                res.send(retItems);
             }
         });
     });
@@ -51,6 +56,15 @@ exports.findAll = function(req, res) {
 	});
 };
 
+
+exports.getChartData = function(req, res) {
+  var category = req.params.category;
+  db.collection('justhowhappy', function(err, collection) {
+    collection.find({ category: category  }).toArray(function(err, items) {
+        res.send(items);
+    });
+    });
+};
 
 
 /*

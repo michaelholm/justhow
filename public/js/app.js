@@ -6,14 +6,14 @@ $(function(){
 	*/
 
 	tpl = {
-	 
+
 		// Hash of preloaded templates for the app
 		templates: {},
     // Recursively pre-load all the templates for the app.
     loadTemplates: function(names, callback) {
-	 
+
 			var that = this;
-	 
+
 			var loadTemplate = function(index) {
 				var name = names[index];
 				console.log('Loading template: templates/' + name + ".html");
@@ -30,16 +30,16 @@ $(function(){
 			};
 			loadTemplate(0);
 		},
-	 
+
 		// Get template by name from hash of preloaded templates
 		get: function(name) {
 			return this.templates[name];
 		}
-	 
+
 	};
 
-	/* 
-	* end template loader 
+	/*
+	* end template loader
 	*/
 
 	app.RatingsRouter = Backbone.Router.extend({
@@ -75,13 +75,13 @@ $(function(){
 					app.ratingsView.social = app.ratingsList.where({ category: 'Social'});
 					app.ratingsView.health = app.ratingsList.iwhere( 'category', 'Health' );
 					//_.sortBy(app.ratingsView.work, function(item) { return item.get('x'); }, this);
-
+					self.work = []
 					var mappedWork = _.map(app.ratingsView.work, function(item) {
 								var passItem = {};
 								passItem.x = parseInt(item.get('x'), 10);
 								passItem.y = parseInt(item.get('y'), 10);
 								var cat = item.get('category');
-								passItem.category = cat.toLowerCase();
+								passItem.name = cat.toLowerCase();
 
 								return passItem;
 							});
@@ -92,7 +92,7 @@ $(function(){
 							passItem.x = parseInt(item.get('x'), 10);
 							passItem.y = parseInt(item.get('y'), 10);
 							var cat = item.get('category');
-							passItem.category = cat.toLowerCase();
+							passItem.name = cat.toLowerCase();
 
 							return passItem;
 						});
@@ -103,29 +103,53 @@ $(function(){
 								passItem.x = parseInt(item.get('x'), 10);
 								passItem.y = parseInt(item.get('y'), 10);
 								var cat = item.get('category');
-								passItem.category = cat.toLowerCase();
+								passItem.name = cat.toLowerCase();
 
 								return passItem;
 						});
 					var healthRatings = _.sortBy(mappedHealth, function(item) { return item.x; }, this);
-					//var loveRatings = 
+					//var loveRatings =
 
 					//var loveRatings = self.doMapping(app.ratingsView.love);
 					// var socialRatings = self.doMapping(app.ratingsView.social);
 					//var healthRatings = self.doMapping(app.ratingsView.health);
 
-					//console.log(JSON.stringify(healthRatings));
+					console.log('Ratings', workRatings);
 					//console.log(JSON.stringify(loveRatings));
-
-					app.ratingsChart = new app.Chart({
-						work: workRatings,
-						general: generalRatings,
-						health: healthRatings
-						//social: self.doMapping(app.ratingsView.social)
-					});
+					self.ratings = [];
+					self.ratings['work'] = workRatings;
+					self.ratings['general'] = generalRatings;
+					self.ratings['health'] = healthRatings;
+					//social: self.doMapping(app.ratingsView.social)
+					app.ratingsChart = new app.Chart();
 					app.ratingsChart.render();
+					//google.setOnLoadCallback(app.ratingsChart.render);
+					//
+					//google.load('visualization', '1', {packages:['gauge']});
+						//google.setOnLoadCallback(drawChart);
+					//function drawChart() {
+						var data = google.visualization.arrayToDataTable([
+							['Label', 'Value'],
+							['Work', 7.8],
+							['Social', 6.5],
+							['Health', 6.8]
+						]);
 
-					$('body').append(JSON.stringify( workRatings ));
+						var guageChartOptions = {
+							width: 400, height: 120,
+							redFrom: 0, redTo: 1.5,
+							yellowFrom:1.5, yellowTo: 3,
+							greenFrom:7.5, greenTo: 10,
+							minorTicks: 5,
+							min:0,
+							max:10
+						};
+
+						var chart = new google.visualization.Gauge(document.getElementById('guage-container'));
+						chart.draw(data, guageChartOptions);
+					//}
+
+					//$('body').append(JSON.stringify( app.ratingsChart.options.ratings ) + ' <p>&nbsp;</p>');
 				},
 
 				error: function (collection, response, options) {
@@ -134,9 +158,9 @@ $(function(){
 
 
 			});
-			
+
 			app.ratingsList.bind('reset', function () { app.ratingsView.render(); });
-			
+
     },
     /**
      * [doMapping description]
@@ -149,12 +173,12 @@ $(function(){
 									passItem.x = parseInt(item.get('x'), 10);
 									passItem.y = parseInt(item.get('y'), 10);
 									var cat = item.get('category');
-									passItem.category = cat.toLowerCase();
+									passItem.name = cat.toLowerCase();
 
 									return passItem;
 							});
 			var sortedTmp = _.sortBy(tmp, function(item) { return item.x; }, this);
-			
+
 			return tmp;
 		},
 		/**
@@ -162,7 +186,7 @@ $(function(){
 		 * @return {[type]}
 		 */
 		home: function () {
-			
+
 		}
 
 	});
@@ -170,12 +194,12 @@ $(function(){
 	var templatesList = ['overlay', 'ratings-list-item', 'hero'];
 	tpl.loadTemplates(templatesList, function() {
 		//create router instance
-		
+
 		app.ratingsRouter = new app.RatingsRouter();
 		//app.ratingsRouter.initialize();
 		//start history service
 		Backbone.history.start();
 
 	});
- 
+
 });

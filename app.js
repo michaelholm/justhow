@@ -28,7 +28,7 @@ if ('development' == app.get('env')) {
 }
 
 
-/* 
+/*
 **	GET
 *			/ratings
 *			/ratings/[lastNumDays]
@@ -43,6 +43,7 @@ if ('development' == app.get('env')) {
 app.get('/ratings', justy.findAll);
 //app.get('/ratings/:id', justy.findRating);
 app.get('/ratings/categories/:category', justy.findByRatingCategory);
+app.get('/ratings/chart/:category', justy.getChartData);
 app.post('/ratings', justy.addRating);
 
 http.createServer(app).listen(app.get('port'), function(){
