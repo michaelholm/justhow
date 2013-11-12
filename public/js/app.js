@@ -74,52 +74,59 @@ $(function(){
 					app.ratingsView.love = app.ratingsList.iwhere( 'category', 'Love' );
 					app.ratingsView.social = app.ratingsList.where({ category: 'Social'});
 					app.ratingsView.health = app.ratingsList.iwhere( 'category', 'Health' );
-					//_.sortBy(app.ratingsView.work, function(item) { return item.get('x'); }, this);
-					self.work = []
-					var mappedWork = _.map(app.ratingsView.work, function(item) {
-								var passItem = {};
-								passItem.x = parseInt(item.get('x'), 10);
-								passItem.y = parseInt(item.get('y'), 10);
-								var cat = item.get('category');
-								passItem.name = cat.toLowerCase();
 
-								return passItem;
+					console.log('UNmapped', JSON.stringify(app.ratingsView.work));
+					var mymap = function(data) {
+						var md = _.map(data, function(item) {
+							console.log('ITEM', item);
+								var passitem = {};
+								var row = [];
+								var obj = {};
+								obj.v = parseInt(item.get('x'), 10);
+								row.push(obj);
+								obj = {};
+								obj.v = parseInt(item.get('y'), 10);
+								row.push(obj);
+								obj = {};
+								obj.v = item.get('category').toLowerCase();
+								row.push(obj);
+								return { c: row };
 							});
-					var workRatings = _.sortBy(mappedWork, function(item) { return item.x; }, this);
+						return md;
+					};
 
-					var mappedGeneral = _.map(app.ratingsView.general, function(item) {
-							var passItem = {};
-							passItem.x = parseInt(item.get('x'), 10);
-							passItem.y = parseInt(item.get('y'), 10);
-							var cat = item.get('category');
-							passItem.name = cat.toLowerCase();
+					var mappedWork = mymap(_.sortBy(app.ratingsView.work, function(item) { return item.get('x'); }, this));
+					var mappedHealth = mymap(app.ratingsView.health);
+					// var mappedGeneral = _.map(app.ratingsView.general, function(item) {
+					// 		var passItem = {};
+					// 		passItem.x = parseInt(item.get('x'), 10);
+					// 		passItem.y = parseInt(item.get('y'), 10);
+					// 		var cat = item.get('category');
+					// 		passItem.name = cat.toLowerCase();
 
-							return passItem;
-						});
-					var generalRatings = _.sortBy(mappedGeneral, function(item) { return item.x; }, this);
+					// 		return passItem;
+					// 	});
+					//var generalRatings = _.sortBy(mappedGeneral, function(item) { return item.x; }, this);
 
-					var mappedHealth = _.map(app.ratingsView.health, function(item) {
-								var passItem = {};
-								passItem.x = parseInt(item.get('x'), 10);
-								passItem.y = parseInt(item.get('y'), 10);
-								var cat = item.get('category');
-								passItem.name = cat.toLowerCase();
+					// var mappedHealth = _.map(app.ratingsView.health, function(item) {
+					// 			var passItem = {};
+					// 			passItem.x = parseInt(item.get('x'), 10);
+					// 			passItem.y = parseInt(item.get('y'), 10);
+					// 			var cat = item.get('category');
+					// 			passItem.name = cat.toLowerCase();
 
-								return passItem;
-						});
-					var healthRatings = _.sortBy(mappedHealth, function(item) { return item.x; }, this);
+					// 			return passItem;
+					// 	});
+					//var healthRatings = _.sortBy(mappedHealth, function(item) { return item.x; }, this);
 					//var loveRatings =
 
 					//var loveRatings = self.doMapping(app.ratingsView.love);
 					// var socialRatings = self.doMapping(app.ratingsView.social);
 					//var healthRatings = self.doMapping(app.ratingsView.health);
-
-					console.log('Ratings', workRatings);
-					//console.log(JSON.stringify(loveRatings));
 					self.ratings = [];
-					self.ratings['work'] = workRatings;
-					self.ratings['general'] = generalRatings;
-					self.ratings['health'] = healthRatings;
+					self.ratings['work'] = mappedWork;
+					//self.ratings['general'] = generalRatings;
+					self.ratings['health'] = mappedHealth;
 					//social: self.doMapping(app.ratingsView.social)
 					app.ratingsChart = new app.Chart();
 					app.ratingsChart.render();

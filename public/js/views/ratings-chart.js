@@ -14,7 +14,7 @@ app.Chart = Backbone.View.extend({
 		var self = this;
     console.log('rendering chart');
 
-    var workdata = app.ratingsRouter.ratings['work'];
+    var workdata = app.ratingsRouter.ratings['work'].concat(app.ratingsRouter.ratings['health']);
 
     var dt = new google.visualization.DataTable(
      {
