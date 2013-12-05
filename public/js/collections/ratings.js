@@ -3,14 +3,14 @@ window.app = window.app || { };
 app.RatingsList = Backbone.Collection.extend({
 
 	//localStorage: new Backbone.LocalStorage("RatingsCollection"),
-	
+
 	url: '/ratings',
 	/**
 	 * [initialize description]
 	 * @return {[type]}
 	 */
 	initialize:function () {
-		//this.fetch();			
+		this.fetch();
 	},
 	/**
 	 * [comparator description]
@@ -27,10 +27,10 @@ app.RatingsList = Backbone.Collection.extend({
 	 * @return {[type]}
 	 */
 	iwhere : function( key, val ){
-    return this.filter( function( item ){
+    return this.filter( function( item ) {
         return item.get( key ).toLowerCase() === val.toLowerCase();
     });
- }
+	}
 
-		
+
 });

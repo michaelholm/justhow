@@ -75,88 +75,58 @@ $(function(){
 					app.ratingsView.social = app.ratingsList.where({ category: 'Social'});
 					app.ratingsView.health = app.ratingsList.iwhere( 'category', 'Health' );
 
-					console.log('UNmapped', JSON.stringify(app.ratingsView.work));
 					var mymap = function(data) {
 						var md = _.map(data, function(item) {
-							console.log('ITEM', item);
-								var passitem = {};
-								var row = [];
-								var obj = {};
-								obj.v = parseInt(item.get('x'), 10);
-								row.push(obj);
-								obj = {};
-								obj.v = parseInt(item.get('y'), 10);
-								row.push(obj);
-								obj = {};
-								obj.v = item.get('category').toLowerCase();
-								row.push(obj);
-								return { c: row };
-							});
+							var passitem = {};
+							var row = [];
+							var obj = {};
+							if (item.get('category').toLowerCase()=== 'work') {
+								// obj.v = item.get('category').toLowerCase();
+								row.push({ v: parseInt(item.get('x'), 10) });
+								row.push({ v: parseInt(item.get('y'), 10) });
+								row.push(null);
+								// obj.v = parseInt(item.get('x'), 10);
+								// row.push(obj);//1
+								// obj.v = null;
+								// row.push(obj);//2
+								// obj.v = parseInt(item.get('y'), 10);
+								// row.push(obj);//3
+							} else {
+								row.push({ v: parseInt(item.get('x'), 10) });
+								row.push(null);
+								row.push({ v: parseInt(item.get('y'), 10) });
+								// obj.v = parseInt(item.get('x'), 10);
+								// row.push(obj);//1
+								// obj.v = parseInt(item.get('y'), 10);
+								// row.push(obj);//2
+								// obj.v = null;
+								// row.push(obj);//3
+							}
+
+							//console.log('row', row);
+							return { c: row };
+						});
+						//console.log('md', md);
 						return md;
 					};
+					//console.log('health', app.ratingsView.health);
+					var ratingsColl = mymap(app.ratingsView.work.concat(app.ratingsView.general));
+					var json = JSON.stringify(ratingsColl).replace(/\"([^(\")"]+)\":/g,"$1:");
+					//console.log('ratingsColl', json);
 
-					var mappedWork = mymap(_.sortBy(app.ratingsView.work, function(item) { return item.get('x'); }, this));
-					var mappedHealth = mymap(app.ratingsView.health);
-					// var mappedGeneral = _.map(app.ratingsView.general, function(item) {
-					// 		var passItem = {};
-					// 		passItem.x = parseInt(item.get('x'), 10);
-					// 		passItem.y = parseInt(item.get('y'), 10);
-					// 		var cat = item.get('category');
-					// 		passItem.name = cat.toLowerCase();
+					console.log('ratingsColl', ratingsColl);
 
-					// 		return passItem;
-					// 	});
-					//var generalRatings = _.sortBy(mappedGeneral, function(item) { return item.x; }, this);
+					self.ratings = ['Work', 'Health', 'Social', 'Love', 'General'];
 
-					// var mappedHealth = _.map(app.ratingsView.health, function(item) {
-					// 			var passItem = {};
-					// 			passItem.x = parseInt(item.get('x'), 10);
-					// 			passItem.y = parseInt(item.get('y'), 10);
-					// 			var cat = item.get('category');
-					// 			passItem.name = cat.toLowerCase();
 
-					// 			return passItem;
-					// 	});
-					//var healthRatings = _.sortBy(mappedHealth, function(item) { return item.x; }, this);
-					//var loveRatings =
-
-					//var loveRatings = self.doMapping(app.ratingsView.love);
-					// var socialRatings = self.doMapping(app.ratingsView.social);
-					//var healthRatings = self.doMapping(app.ratingsView.health);
-					self.ratings = [];
-					self.ratings['work'] = mappedWork;
+					self.ratings['ratings'] = json; //mymap(_.sortBy(ratingsColl, function(item) { return parseInt(item.get('x'), 10); }, this));
+					//self.ratings['work'] = mappedWork;
 					//self.ratings['general'] = generalRatings;
-					self.ratings['health'] = mappedHealth;
+					//self.ratings['health'] = mappedHealth;
 					//social: self.doMapping(app.ratingsView.social)
 					app.ratingsChart = new app.Chart();
 					app.ratingsChart.render();
-					//google.setOnLoadCallback(app.ratingsChart.render);
-					//
-					//google.load('visualization', '1', {packages:['gauge']});
-						//google.setOnLoadCallback(drawChart);
-					//function drawChart() {
-						var data = google.visualization.arrayToDataTable([
-							['Label', 'Value'],
-							['Work', 7.8],
-							['Social', 6.5],
-							['Health', 6.8]
-						]);
 
-						var guageChartOptions = {
-							width: 400, height: 120,
-							redFrom: 0, redTo: 1.5,
-							yellowFrom:1.5, yellowTo: 3,
-							greenFrom:7.5, greenTo: 10,
-							minorTicks: 5,
-							min:0,
-							max:10
-						};
-
-						var chart = new google.visualization.Gauge(document.getElementById('guage-container'));
-						chart.draw(data, guageChartOptions);
-					//}
-
-					//$('body').append(JSON.stringify( app.ratingsChart.options.ratings ) + ' <p>&nbsp;</p>');
 				},
 
 				error: function (collection, response, options) {

@@ -4,8 +4,6 @@ app.Chart = Backbone.View.extend({
 	el: '#chart-container',
 	initialize: function(options) {
 		var self = this;
-		//self.data = options.ratings;
-		console.log('initializing chart');
 	},
 
 	events: {},
@@ -13,34 +11,61 @@ app.Chart = Backbone.View.extend({
 	render: function() {
 		var self = this;
     console.log('rendering chart');
+    var dataTable;
 
-    var workdata = app.ratingsRouter.ratings['work'].concat(app.ratingsRouter.ratings['health']);
-
-    var dt = new google.visualization.DataTable(
-     {
-       cols: [
-          {id: 'name', label: 'Rating', type: 'string'},
-          {id: 'x', label: 'Day', type: 'number'},
-          {id: 'y', label: 'Rating', type: 'number'}
-        ],
-       rows: workdata
-     },
-      0.6);
-
-    console.log('CHART DATA ', dt);
-    // Create and draw the visualization.
-    new google.visualization.LineChart(document.getElementById('chart-container')).draw( dt, {
-        curveType: "function",
-        width: 900,
+    var workdata = app.ratingsRouter.ratings['ratings']; //.concat(app.ratingsRouter.ratings['health']);
+    console.log('work data', workdata);
+    try {
+      dataTable = new google.visualization.DataTable(
+        {
+          cols: [
+            {id: 'x', label: 'Day', type: 'number'},
+            {id: 'y', label: 'Work', type: 'number'},
+            {id:'yy', label: 'Health', type: 'number'}
+          ],
+          rows: workdata
+        },
+        0.6
+      );
+    } catch (e) {
+      console.log('ERROR CONFIGURING CHART DATA --->');
+      console.log(e);
+    }
+    var dtjson = _.omit(dataTable.toJSON(), 'p');
+    console.log('series data', dtjson);
+    try {
+      // Create and draw the visualization.
+      var options = {
+        title: 'Ratings',
+        hAxis: { title: 'Day of Month'},
+        vAxis: { title: 'Rating' },
+        // legend: 'none',
+        trendlines: {
+          0: {
+            labelInLegend: 'Work',
+            type: 'exponential',
+            visibleInLegend: false,
+          },
+          1: {
+            labelInLegend: 'Health',
+            type: 'exponential',
+            visibleInLegend: false,
+          },
+        },
+        width: 920,
         height: 400,
-        vAxis: {
-          maxValue: 10,
-          gridlines: {
-            color: '#333',
-            count: 4
-          }
-        }
-      }
-    );
+      };
+
+      var dataTableData = google.visualization.arrayToDataTable(_.omit(dataTable.toJSON(), 'p'));
+      var chart = new google.visualization.ScatterChart(document.getElementById('chart-container')).draw(dataTableData, options);
+    } catch(err) {
+      console.log('ERROR RENDERING CHART --->');
+      console.log(err);
+    }
+
 	}
+
+
 });
+
+

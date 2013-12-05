@@ -5,7 +5,7 @@ app.RatingListItem = Backbone.View.extend({
 	tagName: "li",
 	model: app.Rating,
 	className: "rating",
-			
+
 	initialize: function (options) {
 		self = this;
 		self.model = new app.Rating();
@@ -29,9 +29,6 @@ app.RatingListItem = Backbone.View.extend({
 
 	render: function ( event ) {
 		var self = this;
-		//self.$el.html(self.template(self));
-		//console.log(self.model);
-		//var tmplOptions = self.model.options;
 		_.extend({}, self.model, self.options);
 		$('.ratingsListing').append( '<li>' + self.template(self.model.toJSON()) + '</li>' );
 		return this;
@@ -43,7 +40,7 @@ app.RatingListItem = Backbone.View.extend({
 		var notes = target.$el.find('.notes-overlay');
 		notes.$el.fadeToggle('slow');
 	},
-	
+
 	badgeType: function(rating) {
 		badge = 'default';
 		switch(true)
@@ -62,5 +59,5 @@ app.RatingListItem = Backbone.View.extend({
 		}
 		return badge;
 	},
-	
+
 });
