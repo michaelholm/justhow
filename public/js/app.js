@@ -119,7 +119,7 @@ $(function(){
 					self.ratings = ['Work', 'Health', 'Social', 'Love', 'General'];
 
 
-					self.ratings['ratings'] = json; //mymap(_.sortBy(ratingsColl, function(item) { return parseInt(item.get('x'), 10); }, this));
+					self.ratings['ratings'] = ratingsColl; //mymap(_.sortBy(ratingsColl, function(item) { return parseInt(item.get('x'), 10); }, this));
 					//self.ratings['work'] = mappedWork;
 					//self.ratings['general'] = generalRatings;
 					//self.ratings['health'] = mappedHealth;
